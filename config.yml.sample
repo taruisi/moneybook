@@ -1,0 +1,39 @@
+# 全体
+DEBUG          : false
+
+# ログフォーマット関係
+
+# ログの時刻フォーマット。 2009-02-14 12:00:00 のようなフォーマットとする。
+LOG_TIME_FORMAT: %Y-%m-%d %H:%M:%S
+
+# 集計時の日時フォーマットと、一覧フォーマット。
+# 項目金額とマッチしないようにする必要あり。
+SHORT_DATE_FORMAT          : %m月%d日
+SHORT_ITEM_FORMAT          : " %s:%5s%s"
+NORMAL_ITEM_SUMMARY_FORMAT : "[%s] 0{} 計:%5d%s"
+NORMAL_ITEM_FORMAT         : "[%s] 0{} :%5s%s%s"
+
+# メール関係
+
+# メールのタイトル。これをベースに[要返信]などの飾りがつく。
+TITLE          : 小遣い帳メール
+
+# 自分のメールアドレス。返信する際に使用する。
+# To: となるのが、$Config[ 'TARGET' ]。 $Config[ 'SENDER' ]はそのままSender: フィールドとなる。
+# 会社のように社外発信とかの縛りがあった場合の考慮。
+SENDER         : sender@exsample.net
+TARGET         : target@exsample.net
+
+# 自分のアカウント名が思った通りの値になっているかをチェックするか否か。
+# 一つのサーバでアカウント毎に複数のサービスを立ち上げる時などに利用。
+# $Config[ 'ACCOUNT_CHECK' ] = false
+ACCOUNT_CHECK  : target@exsample.net
+
+# メールホスト。
+SMTP_SERVER    : localhost
+
+# DB関係
+# DBアクセスのための変数。ユーザ名・パスワード・データベース名
+DB_USER        : mywallets
+DB_PASSWORD    : mywallets
+DB_NAME        : mywallets-dev
