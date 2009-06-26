@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'tmail'
 require 'net/smtp'
+require 'kconv'
 
 IM = TMail::Mail.parse($stdin.read)
 if $Config['DUMP_MAIL'] then
@@ -71,7 +72,7 @@ def get_mail_type( user )
     return [:NOP, nil, "Account Check Failed Req:#{$Config[ 'ACCOUNT_CHECK' ]} Mail:#{IM.to.to_s}" ] 
   end
 
-  IM.body.split("\n").each do |e|
+  Kconv.toutf8(IM.body).split("\n").each do |e|
     if /\[(.+)\]/ =~ e then
       item = $1.strip
       replies << e.chomp
@@ -92,7 +93,7 @@ def get_mail_type( user )
           i = [ iname, ival ]
           if /^\{(.+)\}/ =~ $' then i[2] = $1 end
           if ival==0.0 && i[2] then i[0]="BLOG" end
-          if (Kconv.toutf8(i[0])=~/項目名/) or (Kconv.toutf8(i[0])!~/積立/ and i[1]<0) then
+          if (i[0]=~/項目名/) or (i[0]!~/積立/ and i[1]<0) then
           else
             items << i
           end

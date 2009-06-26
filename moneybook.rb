@@ -120,7 +120,7 @@ def summarize( user, t1, t2 )
     end
     if $VType[i.section.vtype]==:String then
       if /BLOG/=~i.section.name then
-        ret += " "*4+i.comment+"\n"
+        ret += " "*3+"\""+i.comment+"\"\n"
 #      else
 #        if i.comment then
 #          ret += 
@@ -129,7 +129,7 @@ def summarize( user, t1, t2 )
     else
       v = (($VType[i.section.vtype]==:Integer)?(INTEGER_FORMAT):(FLOAT_FORMAT))%i.price
       ret += (Kconv.toutf8($Config[ 'SHORT_ITEM_FORMAT' ]+"\n")) % [ Kconv.toutf8(Kconv.toeuc(i.section.name).center(sec_width)), v.to_s, i.section.unit ]
-      ret += " "*4+i.comment+"\n" if i.comment
+      ret += " "*2+"->"+i.comment+"\n" if i.comment
     end
   end
   ret
