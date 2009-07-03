@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
-# $Id: moneybook.rb 100 2009-06-10 04:18:09Z taruisi $
-$rev = "$Rev: 100 $".gsub("\$","").gsub(" ","")
+# $Id: moneybook.rb 101 2009-07-02 04:38:42Z taruisi $
+$rev = "$Rev: 101 $".gsub("\$","").gsub(" ","")
 
 # ログファイル名。スクリプト本体+logディレクトリ配下に作成する。
 LOG_FILE_DIR  = File.dirname( File.expand_path(__FILE__) )+'/log/'
@@ -95,7 +95,7 @@ def summarize( user, t1, t2 )
       return "" unless p
       # 集計行を表示する。文字幅は、予め計算していた最大長。
       ret += ($Config['NORMAL_ITEM_SUMMARY_FORMAT']+"\n")%([Kconv.toutf8(Kconv.toeuc(s.name).center(sec_width)), p.to_i, s.unit ])
-      sum += p
+      sum += p if s.total
     else
       ri = Item.find_recent( user, s )
       if ri then

@@ -1,4 +1,4 @@
-# $Id: maillib.rb 100 2009-06-10 04:18:09Z taruisi $
+# $Id: maillib.rb 101 2009-07-02 04:38:42Z taruisi $
 
 require 'rubygems'
 require 'tmail'

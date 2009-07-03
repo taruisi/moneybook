@@ -1,4 +1,4 @@
-# $Id: dblib.rb 100 2009-06-10 04:18:09Z taruisi $
+# $Id: dblib.rb 101 2009-07-02 04:38:42Z taruisi $
 
 require 'rubygems'
 require 'activerecord'
@@ -92,11 +92,12 @@ class Section < ActiveRecord::Base
     return false if /BLOG/=~s.name
     modified = false
     aopt.each do |opt|
-      if /^(type|(oneaday|one)|sum|(ofs|offset)|unit)\=.+/=~ opt then
+      if /^(type|(oneaday|one)|sum|(ofs|offset)|unit|total|def(ault)*)\=.+/=~ opt then
         aopt=opt.split('=')
         case( aopt[0] )
           when /^unit/
             s.unit   = Kconv.toutf8(aopt[1].strip)
+            s.total  = false unless s.unit=~/円/  # unitが後ろに来たときのオーバーライドはやめさせたい。
             modified = true
           when /^type/
             s.vtype = $VTypeR[ aopt[1].capitalize.to_sym ]
@@ -120,13 +121,17 @@ class Section < ActiveRecord::Base
               end
               modified = true
             end
+          when /^total/
+            s.total  =true  if /(t|true)/=~ aopt[1]
+            s.total  =false if /(f|false)/=~aopt[1]
+            modified = true
         end
       end
     end
     return modified
   end
 
-  def self.modify_by_name( s )
+  def self.modify_by_section( s )
     case( s.name )
       when /体重/
         s.unit    = "Kg"
@@ -134,36 +139,42 @@ class Section < ActiveRecord::Base
         s.oneaday = true
         s.sum     = false
         s.offset  = 0
+        s.total   = false
       when /体脂肪/
         s.unit    = "％"
         s.vtype   = $VTypeR[ :Float ]
         s.oneaday = true
         s.sum     = false
         s.offset  = 0
+        s.total   = false
       when /歩数/
         s.unit    = "歩"
         s.vtype   = $VTypeR[ :Integer ]
         s.oneaday = true
         s.sum     = false
         s.offset  = -24*60*60
+        s.total   = false
       when /BLOG/
         s.unit    = ""
         s.vtype   = $VTypeR[ :String ]
         s.oneaday = false
         s.sum     = false
         s.offset  = 0
+        s.total   = false
       when /((朝|夕|昼)食|(筋|脳)トレ)/
         s.unit    = ""
         s.vtype   = $VTypeR[ :String ]
         s.oneaday = true
         s.sum     = false
         s.offset  = 0
+        s.total   = false
       else
         s.unit    = "円"
         s.vtype   = $VTypeR[ :Integer ]
         s.oneaday = false
         s.sum     = true
         s.offset  = 0
+        s.total   = true
      end
      return s
   end
@@ -177,7 +188,7 @@ class Section < ActiveRecord::Base
     if ret=check_section( u, sname ) then
   # 前の unit フィールドがないテーブルに unit を拡張した時のための考慮。
       if (ret.unit==""||ret.unit==nil) then
-        modify_by_name( ret )
+        modify_by_section( ret )
         modify_by_options( ret, asec )
         ret.save
       else
@@ -188,7 +199,7 @@ class Section < ActiveRecord::Base
       sec = Section.new
       sec.name    = sname
       sec.user    = u
-      modify_by_name( sec )
+      modify_by_section( sec )
       modify_by_options( sec, asec )
       sec.save
       return sec
